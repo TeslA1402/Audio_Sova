@@ -10,12 +10,12 @@ public class Main {
 
         Map<Integer, ArrayList> hashmapOne, hashmapTwo ;
         Audio one = new Audio();
-        hashmapOne=one.AudioFile("C://Users//nicem//OneDrive//Рабочий стол//test//fp//1233793");
+        hashmapOne=one.AudioFile("C://Users//nicem//OneDrive//Рабочий стол//test//fp//4579522");
         Set<Map.Entry<Integer, ArrayList>> setOne = hashmapOne.entrySet();
 
 
         Audio two = new Audio();
-        hashmapTwo=two.AudioFile("C://Users//nicem//OneDrive//Рабочий стол//test//fp//1175384");
+        hashmapTwo=two.AudioFile("C://Users//nicem//OneDrive//Рабочий стол//test//fp//4579522_36");
         Set<Map.Entry<Integer, ArrayList>> setTwo = hashmapTwo.entrySet();
 
         ArrayList<Integer> listOne;
@@ -27,7 +27,7 @@ public class Main {
 
 
         for (Map.Entry<Integer, ArrayList> x : setOne){
-            //int min=Integer.MAX_VALUE;
+            int delta=Integer.MAX_VALUE;
             for (Map.Entry<Integer, ArrayList> y : setTwo) {
                 listOne=x.getValue();
                 listTwo=y.getValue();
@@ -35,10 +35,17 @@ public class Main {
 
                     for (int ValueTwo:listTwo){
                         if (ValueOne==ValueTwo){
-                            System.out.println(x.getKey() + " = " + y.getKey());
+                            if(delta>abs(x.getKey()-y.getKey())) {
 
-                            ArrOne.add(x.getKey());
-                            ArrTwo.add(y.getKey());
+                                delta=abs(x.getKey()-y.getKey());
+                                if ((ArrOne.contains(x.getKey())==true)) {
+                                    int a = ArrOne.indexOf(x.getKey());
+                                    ArrTwo.set(a, y.getKey());
+                                }else {
+                                    ArrOne.add(x.getKey());
+                                    ArrTwo.add(y.getKey());
+                                }
+                            }
 
                             check=true;
                         }else check=false;
@@ -65,49 +72,9 @@ public class Main {
         }
 
 
-        //if(n>1){
-        //    for(int i=1; i<n; i++){
-        //        int j = i-1, t=ArrOne.get(i), tt=ArrTwo.get(i);
-        //       while ((j>=0)&& (ArrOne.get(j)>t)){
-        //           ArrOne.set(j+1, ArrOne.get(j));
-        //            ArrTwo.set(j+1, ArrTwo.get(j));
-        //            j--;
-        //        }
-        //        ArrOne.set(j+1, t);
-        //        ArrTwo.set(j+1, tt);
-        //    }
-        //}
-
-        if(i>1){
-            for(i=1; i<Arr.length; i++){
-                int j = i-1, t=Arr[i][0], tt=Arr[i][1];
-                while ((j>=0)&&(Arr[j][0]>t)){
-                    Arr[j+1][0]=Arr[j][0];
-                    Arr[j+1][1]=Arr[j][1];
-                    j--;
-                }
-                Arr[j+1][0]=t;
-                Arr[j+1][1]=tt;
-            }
-        }
-        System.out.println( "==================================" );
-        System.out.println( "==================================" );
-        System.out.println( "==================================" );
-        System.out.println( "==================================" );
-        System.out.println( "==================================" );
-        System.out.println( "==================================" );
-
         for ( i = 0; i<n; i++){
             System.out.println(Arr[i][0] + "=" + Arr[i][1]);
         }
-
-        System.out.println( "==================================" );
-        System.out.println( "==================================" );
-        System.out.println( "==================================" );
-        System.out.println( "==================================" );
-        System.out.println( "==================================" );
-
-
 
         for(i=1; i<Arr.length; i++){
             int dt, bt;
@@ -139,12 +106,13 @@ public class Main {
 
 class Audio{
 
-    public static HashMap AudioFile(String name) throws FileNotFoundException {
+    public static TreeMap AudioFile(String name) throws FileNotFoundException {
 
         File file = new File(name);
         Scanner scanner = new Scanner(file);
         ArrayList<Integer> list = new ArrayList<Integer>();
-        Map<Integer, ArrayList> hashmap = new HashMap<Integer, ArrayList>();
+
+        TreeMap<Integer, ArrayList> Map = new TreeMap<Integer, ArrayList>();
 
         String[] array = scanner.nextLine().split(" ");
 
@@ -154,7 +122,6 @@ class Audio{
 
         for (int i = 0; i < array.length; i+=2){
 
-            //System.out.println(array[i]);
 
             str=Integer.parseInt(array[i]);
             time=Integer.parseInt(array[i+1]);
@@ -162,18 +129,18 @@ class Audio{
             if ((time.equals(reload)==true) && (time!=0)){
 
                 list.add(str);
-                hashmap.put(time, list);
+                Map.put(time, list);
             }
             else if (time!=0){
                 list = new ArrayList<Integer>();
                 list.add(str);
-                hashmap.put(time, list);
+              Map.put(time, list);
             }
             reload=time;
         }
 
 
-        return (HashMap) hashmap;
+        return (TreeMap) Map;
     }
 
 }
