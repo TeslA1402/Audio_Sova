@@ -6,101 +6,153 @@ import static java.lang.Math.abs;
 
 public class Main {
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args)  throws FileNotFoundException{
 
-        Map<Integer, ArrayList> hashmapOne, hashmapTwo ;
-        Audio one = new Audio();
-        hashmapOne=one.AudioFile("C://Users//nicem//OneDrive//Рабочий стол//test//fp//4579522");
-        Set<Map.Entry<Integer, ArrayList>> setOne = hashmapOne.entrySet();
+        long start = System.currentTimeMillis();
 
 
-        Audio two = new Audio();
-        hashmapTwo=two.AudioFile("C://Users//nicem//OneDrive//Рабочий стол//test//fp//4579522_36");
-        Set<Map.Entry<Integer, ArrayList>> setTwo = hashmapTwo.entrySet();
+        File dir = new File("C://Users//nicem//OneDrive//Рабочий стол//test//fp_test");
 
-        ArrayList<Integer> listOne;
-        ArrayList<Integer> listTwo;
-        boolean check=false;
-        ArrayList<Integer> ArrOne = new ArrayList<Integer>();
-        ArrayList<Integer> ArrTwo = new ArrayList<Integer>();
+        if(dir.isDirectory())
+        {
+            for(File item : dir.listFiles()){
 
+                for(File Name_File_Two : dir.listFiles()){
 
+                    if(Name_File_Two.getName()==item.getName()){
 
-        for (Map.Entry<Integer, ArrayList> x : setOne){
-            int delta=Integer.MAX_VALUE;
-            for (Map.Entry<Integer, ArrayList> y : setTwo) {
-                listOne=x.getValue();
-                listTwo=y.getValue();
-                for (int ValueOne:listOne) {
-
-                    for (int ValueTwo:listTwo){
-                        if (ValueOne==ValueTwo){
-                            if(delta>abs(x.getKey()-y.getKey())) {
-
-                                delta=abs(x.getKey()-y.getKey());
-                                if ((ArrOne.contains(x.getKey())==true)) {
-                                    int a = ArrOne.indexOf(x.getKey());
-                                    ArrTwo.set(a, y.getKey());
-                                }else {
-                                    ArrOne.add(x.getKey());
-                                    ArrTwo.add(y.getKey());
-                                }
-                            }
-
-                            check=true;
-                        }else check=false;
-
-                        if (check==true) break;
+                        System.out.println("identical files");
                     }
-                    if (check==true) break;
+                    else{
+
+                        System.out.println(item.getName() + "   " + Name_File_Two.getName() + "   " + comparison(item.getAbsolutePath(), Name_File_Two.getAbsolutePath()));
+
+                    }
                 }
             }
         }
 
-        int n=ArrOne.size(), i=0, ctrl=0;
-
-        int[][] Arr = new int[n][2];
-
-        for (int m: ArrOne){
-            Arr[i][0]=m;
-            i++;
-        }
-        i=0;
-        for (int m: ArrTwo){
-            Arr[i][1]=m;
-            i++;
-        }
 
 
-        for ( i = 0; i<n; i++){
-            System.out.println(Arr[i][0] + "=" + Arr[i][1]);
-        }
 
-        for(i=1; i<Arr.length; i++){
-            int dt, bt;
-            dt=abs(Arr[i][0]-Arr[i-1][0]);
-            bt=abs(Arr[i][1]-Arr[i-1][1]);
-            if(abs(dt-bt)<5) ctrl++;
-        }
-        if (ctrl>=(0.2*Arr.length))
-            System.out.println( "true" );
-        else System.out.println( "false" );
+        long finish = System.currentTimeMillis();
+        long timeConsumedMillis = finish - start;
+        System.out.println(timeConsumedMillis);
 
     }
 
-/*
-Сделал:
-Распределить по блокам
-сравнить все отпечатки и вывести время
-отсортировать попорядку
+    public static int comparison(String File_One_Name, String File_Two_Name)  throws FileNotFoundException{
 
-Осталось сделать:
+        Map<Integer, ArrayList> hashmapOne, hashmapTwo ;
 
-переделать лист в массив для более быстрого обращения к элементам,
-удалить случайные совпадения (2964=730, 286=3644),
-проверить ритм
-учесть пустоту и вставки
-*/
+        Audio one = new Audio();
+        hashmapOne=one.AudioFile(File_One_Name);
+
+        Audio two = new Audio();
+        hashmapTwo=two.AudioFile(File_Two_Name);
+
+        Set<Map.Entry<Integer, ArrayList>> Tree_Map_One = hashmapOne.entrySet();
+        Set<Map.Entry<Integer, ArrayList>> Tree_Map_Two = hashmapTwo.entrySet();
+
+        ArrayList<Integer> Hash_Value_One;
+        ArrayList<Integer> Hash_Value_Two;
+        int check=0;
+        boolean equally=false;
+        ArrayList<Integer> True_Key_One = new ArrayList<Integer>();
+        ArrayList<Integer> True_Key_Two = new ArrayList<Integer>();
+
+
+
+        for (Map.Entry<Integer, ArrayList> Key_One : Tree_Map_One){
+            int delta=Integer.MAX_VALUE;
+
+            for (Map.Entry<Integer, ArrayList> Key_Two : Tree_Map_Two) {
+                Hash_Value_One=Key_One.getValue();
+                Hash_Value_Two=Key_Two.getValue();
+                check=0;
+
+                for (int ValueOne:Hash_Value_One) {
+
+                    for (int ValueTwo:Hash_Value_Two)
+                    {
+                        if (ValueOne==ValueTwo){
+
+                            if(delta>abs(Key_One.getKey()-Key_Two.getKey()) && check>=3) {
+
+                                delta=abs(Key_One.getKey()-Key_Two.getKey());
+
+                                if ((True_Key_One.contains(Key_One.getKey())==true)) {
+                                    int a = True_Key_One.indexOf(Key_One.getKey());
+                                    True_Key_Two.set(a, Key_Two.getKey());
+                                }
+                                else {
+                                    True_Key_One.add(Key_One.getKey());
+                                    True_Key_Two.add(Key_Two.getKey());
+                                }
+                            }
+                            equally=true;
+                        }
+
+                        if (equally==true) {
+                            equally=false;
+                            check++;
+                            break;
+                        }
+                    }
+                    if (check==4) break;
+                }
+
+            }
+        }
+
+        return Кhythm_Сheck(True_Key_One, True_Key_Two);
+    }
+
+    public static int Кhythm_Сheck(ArrayList True_Key_One, ArrayList True_Key_Two){
+
+        ListIterator<Integer> True_Key_One_Iter = True_Key_One.listIterator();
+        ListIterator<Integer> True_Key_Two_Iter = True_Key_Two.listIterator();
+
+        int Next_Key_One_Value=0, Next_Key_Two_Value=0, ctrl=0, itog=0;
+
+        while(True_Key_One_Iter.hasNext() && True_Key_Two_Iter.hasNext()){
+
+            int dt, bt, True_Key_One_Value, True_Key_Two_Value, True_Key_One_Value_Next, True_Key_Two_Value_Next;
+
+            if (Next_Key_One_Value==0 && Next_Key_Two_Value==0) {
+                True_Key_One_Value = True_Key_One_Iter.next();
+                True_Key_Two_Value = True_Key_Two_Iter.next();
+                True_Key_One_Value_Next = True_Key_One_Iter.next();
+                True_Key_Two_Value_Next = True_Key_Two_Iter.next();
+            }
+            else {
+                True_Key_One_Value = Next_Key_One_Value;
+                True_Key_Two_Value = Next_Key_Two_Value;
+                True_Key_One_Value_Next = True_Key_One_Iter.next();
+                True_Key_Two_Value_Next = True_Key_Two_Iter.next();
+            }
+
+            //System.out.println(True_Key_One_Value + " = " +  True_Key_Two_Value);
+
+            dt=abs(True_Key_One_Value_Next-True_Key_One_Value);
+            bt=abs(True_Key_Two_Value_Next-True_Key_Two_Value);
+            if(abs(dt-bt)<5) ctrl++;
+
+            Next_Key_One_Value=True_Key_One_Value_Next;
+            Next_Key_Two_Value=True_Key_Two_Value_Next;
+
+        }
+
+        if (ctrl>=(0.2*True_Key_One.size()))
+            //System.out.println( "true = " + ctrl);
+            itog=1;
+        else
+            //System.out.println( "false = " + ctrl);
+            itog=0;
+        return itog;
+    }
+
+
 
 }
 
